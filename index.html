@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reset da Idade Metabólica — 7D</title>
+<style>
+:root{
+  --purple:#7b1fa2; --purple-dark:#5c1178; --pink:#e91e8c; --green:#00b86b;
+  --bg:#ffffff; --text:#3a1150; --muted:#7a6285; --card:#faf6fc; --border:#ecdcf5;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#1c0f24; --text:#f3e9fa; --muted:#c9b3d6; --card:#2a1734; --border:#43285a; }
+}
+:root[data-theme="dark"]{ --bg:#1c0f24; --text:#f3e9fa; --muted:#c9b3d6; --card:#2a1734; --border:#43285a; }
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100%;}
+.bar{position:sticky;top:0;top:env(safe-area-inset-top,0px);height:6px;background:var(--border);z-index:10}
+.bar-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--pink));transition:width .4s ease;width:0%}
+.wrap{max-width:480px;margin:0 auto;padding:32px 20px 60px;min-height:80vh;display:flex;flex-direction:column;justify-content:center}
+.screen{display:none;animation:fade .35s ease}
+.screen.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+h1{font-size:1.4rem;line-height:1.3;color:var(--purple-dark);text-align:center;margin:0 0 20px}
+p{color:var(--text);line-height:1.55;font-size:.98rem}
+.center{text-align:center}
+.muted{color:var(--muted);font-size:.9rem}
+.opt{display:block;width:100%;text-align:left;background:var(--card);border:1.5px solid var(--border);color:var(--text);border-radius:14px;padding:16px;margin-bottom:12px;font-size:.97rem;cursor:pointer;transition:border-color .15s, transform .1s}
+.opt:hover{border-color:var(--purple)}
+.opt:active{transform:scale(.98)}
+.opt.sel{border-color:var(--purple);background:linear-gradient(0deg,var(--card),var(--card))}
+.btn{display:block;width:100%;background:linear-gradient(90deg,var(--purple),var(--purple-dark));color:#fff;border:none;border-radius:14px;padding:16px;font-size:1.02rem;font-weight:600;cursor:pointer;margin-top:8px}
+.btn.green{background:linear-gradient(90deg,#00c877,#00996a)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+input{width:100%;padding:14px;border-radius:12px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-size:1rem;margin-bottom:14px}
+label{font-weight:600;color:var(--purple-dark);font-size:.9rem;display:block;margin-bottom:6px}
+.callout{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin:16px 0;font-size:.92rem}
+.emoji{font-size:2.2rem;text-align:center;display:block;margin-bottom:10px}
+.badge{display:inline-block;background:linear-gradient(90deg,#f57c00,#e65100);color:#fff;font-weight:700;padding:6px 14px;border-radius:20px;font-size:.85rem;margin-bottom:10px}
+.result-age{font-size:2rem;font-weight:800;color:var(--purple-dark);text-align:center;margin:6px 0 16px}
+.warn{background:#fff3e0;color:#e65100;border-radius:10px;padding:10px 14px;font-weight:700;text-align:center;margin-bottom:16px}
+:root[data-theme="dark"] .warn, @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .warn{background:#3a2200;color:#ffb74d}}
+.timeline{border-left:3px solid var(--purple);padding-left:14px;margin:18px 0}
+.tl-item{margin-bottom:14px}
+.tl-day{font-weight:700;color:var(--pink)}
+.check{margin-bottom:10px;font-size:.95rem}
+.spinner{width:44px;height:44px;border:4px solid var(--border);border-top-color:var(--purple);border-radius:50%;margin:0 auto 18px;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.countdown{font-size:2rem;font-weight:800;color:var(--purple);text-align:center;margin:14px 0}
+footer{text-align:center;color:var(--muted);font-size:.75rem;padding:10px}
+</style>
+</head>
+<body>
+<div class="bar"><div class="bar-fill" id="progressBar"></div></div>
+<div class="wrap" id="app"></div>
+<footer>© 2026 Reset da Idade Metabólica — 7D</footer>
+
+<script>
+// ======= CONFIG =======
+const CAKTO_CHECKOUT_URL = "https://pay.cakto.com.br/zxa9ci5_1147954";
+
+const state = { name:"", age:26, email:"", whatsapp:"", answers:{}, score:0 };
+
+function scoreFor(qid, idx){ state.answers[qid]=idx; }
+function totalScore(){ return ["q1","q2","q3","q4"].reduce((s,k)=> s+(state.answers[k]||0),0); }
+
+let current = 0;
+const screens = [];
+function go(i){ current=i; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+function next(){ go(current+1); }
+
+// ======= SCREEN BUILDERS =======
+screens.push(()=>`
+  <div class="screen active">
+    <h1>Mais de 32.400 mulheres já passaram pelo <strong>Reset da Idade Metabólica — 7D</strong>, destravaram o metabolismo e recuperaram o corpo de anos atrás.</h1>
+    <button class="btn" onclick="next()">👉 Continuar</button>
+  </div>`);
+
+function quizScreen(qid, title, options){
+  return ()=>`
+  <div class="screen active">
+    <h1>${title}</h1>
+    ${options.map((o,i)=>`<button class="opt" onclick="scoreFor('${qid}',${i});next()">${o}</button>`).join('')}
+  </div>`;
+}
+
+screens.push(quizScreen('q1','Como está sua barriga hoje?',[
+  'Barriga lisa ou quase lisa, sem inchaço',
+  'Um pouco de barriga, mas dá pra disfarçar com roupa',
+  'Barriga inchada, incomoda e é a primeira coisa que eu noto',
+  'Barriga estufada o dia todo, mesmo comendo pouco'
+]));
+
+screens.push(()=>`
+  <div class="screen active">
+    <h1>Sabemos o quanto é desgastante fazer tudo certo e não ver resultado no espelho.</h1>
+    <div class="callout">✨ Mas você não está sozinha: mais de <strong>610.000 mulheres</strong> de todas as idades já se sentiram exatamente assim antes de começar o Reset 7D.</div>
+    <p class="center muted">Siga com a gente e entenda como elas destravaram o metabolismo — você também vai conseguir.</p>
+    <button class="btn" onclick="next()">👉 Continuar</button>
+  </div>`);
+
+screens.push(quizScreen('q2','Você percebe escurecimento na pele (pescoço, axilas, virilha ou dobras) ou manchas que não tinha antes?',[
+  'Não, minha pele é uniforme na maior parte do tempo',
+  'Já notei um escurecimento leve em algumas áreas',
+  'Escurecimento visível em 1 ou 2 áreas',
+  'Escurecimento em várias áreas e cada vez mais escuro'
+]));
+
+screens.push(quizScreen('q3','Quando você tenta fazer dieta, o que costuma acontecer?',[
+  'Emagreço fácil e mantenho o resultado',
+  'Emagreço, mas volto a engordar rápido depois',
+  'Tenho muita dificuldade — o ponteiro quase não se mexe',
+  'Não consigo nem começar, sinto fome e desisto em poucos dias'
+]));
+
+screens.push(()=>`
+  <div class="screen active">
+    <div class="callout">
+      <p><strong>⚠️ Faltam só mais algumas perguntas</strong> para calcularmos sua Idade Metabólica. Vamos entender agora como você tem se sentido no dia a dia.</p>
+      <p><strong>Responda com atenção.</strong></p>
+    </div>
+    <button class="btn" onclick="next()">Continuar</button>
+  </div>`);
+
+screens.push(()=>`
+  <div class="screen active">
+    <h1>Me conta:</h1>
+    <label>Seu nome</label>
+    <input id="inpName" placeholder="Seu nome" value="${state.name}">
+    <label>Sua idade</label>
+    <input id="inpAge" type="number" min="16" max="90" placeholder="Sua idade" value="${state.age||''}">
+    <button class="btn" onclick="saveNameAge()">Continuar</button>
+  </div>`);
+
+screens.push(quizScreen('q4','Você sente ondas de calor, queda de cabelo, unhas fracas, libido baixa, oscilações de humor ou cansaço mental?',[
+  'Nenhum ou quase nenhum desses sintomas',
+  '1 ou 2 sintomas leves',
+  '3 ou 4 sintomas que já atrapalham minha rotina',
+  'Vários sintomas ao mesmo tempo, quase todos os dias'
+]));
+
+screens.push(quizScreen('q5','Quanto você quer ou precisa perder?',[
+  'Quero perder até 5kg',
+  'Quero perder entre 5kg e 10kg',
+  'Quero perder entre 10kg e 15kg',
+  'Quero perder mais de 15kg'
+]));
+
+screens.push(()=>`
+  <div class="screen active">
+    <h1>Pronto!</h1>
+    <p class="center">Chegou a hora de reverter sua Idade Metabólica e receber seu protocolo personalizado. Nos informe seus dados para enviarmos agora.</p>
+    <label>Seu melhor e-mail</label>
+    <input id="inpEmail" type="email" placeholder="seuemail@exemplo.com">
+    <label>Seu WhatsApp</label>
+    <input id="inpWhats" type="tel" placeholder="(00) 00000-0000">
+    <button class="btn" onclick="saveLead()">Continuar</button>
+  </div>`);
+
+screens.push(()=>{
+  setTimeout(()=>next(), 2600);
+  return `
+  <div class="screen active center">
+    <div class="spinner"></div>
+    <h1>Calculando seu diagnóstico...</h1>
+    <p class="muted">Mais de 130 mil mulheres já escolheram o Reset 7D e tiveram resultados incríveis.</p>
+  </div>`;
+});
+
+function computeResult(){
+  const score = totalScore(); // 0-12
+  state.score = score;
+  const metAge = (parseInt(state.age)||26) + Math.round(score*1.5) + 5;
+  let level, label;
+  if(score<=3){level=1;label='METABOLISMO EM ALERTA';}
+  else if(score<=6){level=2;label='METABOLISMO LENTO';}
+  else if(score<=9){level=3;label='METABOLISMO ESTAGNADO';}
+  else {level=4;label='METABOLISMO CRÍTICO';}
+  return {metAge, level, label};
+}
+
+screens.push(()=>{
+  const r = computeResult();
+  const nome = state.name || 'Você';
+  return `
+  <div class="screen active">
+    <div class="center"><span class="badge">nível 0${r.level} — ${r.label}</span></div>
+    <p class="center" style="margin-bottom:0">${nome}, sua Idade Metabólica é:</p>
+    <div class="result-age">${r.metAge} anos</div>
+    <div class="warn">⚠️ INTERVENÇÃO NECESSÁRIA!</div>
+    <p>Seu metabolismo está funcionando muito abaixo do que deveria para a sua idade. Os sinais que você descreveu indicam resistência insulínica ativa, inflamação de baixo grau e um corpo em modo de economia — travando qualquer tentativa de emagrecimento.</p>
+    <p><strong>O diagnóstico personalizado do Reset da Idade Metabólica — 7D identifica exatamente o que está travando o SEU metabolismo e reverte isso com o protocolo de 7 dias.</strong></p>
+    <div class="callout center"><strong>Você pode perder até 7KG em 7 dias</strong> com o Reset da Idade Metabólica.</div>
+    <button class="btn" onclick="next()">Ver como funciona</button>
+  </div>`;
+});
+
+screens.push(()=>`
+  <div class="screen active">
+    <h1>Sua evolução nos próximos 7 dias</h1>
+    <div class="timeline">
+      <div class="tl-item"><span class="tl-day">Dia 01</span><br>Corpo entende que pode parar de estocar gordura</div>
+      <div class="tl-item"><span class="tl-day">Dia 02</span><br>Menos inchaço, roupas começando a folgar</div>
+      <div class="tl-item"><span class="tl-day">Dia 03</span><br>Mais energia ao acordar, menos vontade de doce</div>
+      <div class="tl-item"><span class="tl-day">Dia 04</span><br>Barriga visivelmente menor</div>
+      <div class="tl-item"><span class="tl-day">Dia 05</span><br>Sono mais profundo e pele com aspecto mais vivo</div>
+      <div class="tl-item"><span class="tl-day">Dia 06</span><br>Mente mais clara, raciocínio e memória afiados</div>
+      <div class="tl-item"><span class="tl-day">Dia 07</span><br>🏆 Até 7kg eliminados + idade metabólica reduzida</div>
+    </div>
+    <button class="btn" onclick="next()">Quero começar meu Reset</button>
+  </div>`);
+
+screens.push(()=>`
+  <div class="screen active">
+    <h1>Você está a 7 dias de ser uma nova versão de você mesma</h1>
+    <p><strong>Funciona mesmo se você...</strong></p>
+    <div class="check">✅ Já passou dos 40, 50 ou está na menopausa</div>
+    <div class="check">✅ Já tentou todas as dietas da moda e nada travou o ponteiro</div>
+    <div class="check">✅ Acredita que seu metabolismo não responde mais</div>
+    <div class="check">✅ Tem compulsão por doces ou fome emocional</div>
+    <div class="check">✅ Vive cansada e sem disposição, mesmo dormindo "bem"</div>
+    <div class="check">✅ Sente a roupa apertar mais rápido do que deveria</div>
+    <div class="check">✅ Tem a barriga inchada mesmo comendo pouco</div>
+    <div class="check">✅ Já se sentiu "velha por dentro" antes da hora</div>
+    <a class="btn green" href="${CAKTO_CHECKOUT_URL}" style="text-decoration:none;display:block;text-align:center">🔓 Quero meu Reset da Idade Metabólica</a>
+    <p class="muted center">✓ Acesso imediato · ✓ Materiais de apoio · ✓ Garantia de 7 dias</p>
+  </div>`);
+
+// ======= HELPERS =======
+function saveNameAge(){
+  state.name = document.getElementById('inpName').value.trim() || 'Você';
+  state.age = parseInt(document.getElementById('inpAge').value) || 26;
+  next();
+}
+function saveLead(){
+  state.email = document.getElementById('inpEmail').value.trim();
+  state.whatsapp = document.getElementById('inpWhats').value.trim();
+  next();
+}
+
+function render(){
+  document.getElementById('app').innerHTML = screens[current]();
+  document.getElementById('progressBar').style.width = Math.round((current/(screens.length-1))*100)+'%';
+}
+
+render();
+</script>
+</body>
+</html>
